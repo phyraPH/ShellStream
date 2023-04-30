@@ -1,7 +1,6 @@
 # ShellStream
 
-Just a small utility program that can download and execute shellcode from a remote server on a continuous basis. It uses WinHTTP to communicate with the remote server and retrieve the shellcode, and then XOR encryption to obfuscate the data. The program can be useful for various security testing and research purposes, such as testing the efficacy of antivirus software or exploring the potential of remote code execution vulnerabilities.
-
+Just a small utility program that can download and execute shellcode from a remote server on a continuous basis. It uses WinHTTP to communicate with the remote server and retrieve the shellcode, and then XOR encryption to obfuscate the data. This should only be intended for ethical purposes.
 
  - Download and execute shellcode
  - Retrieve shellcode using WinHTTP
