@@ -1,4 +1,4 @@
-# ContinuousShellcodeExecutor
+# ShellStream
 
 Just a small utility program that can download and execute shellcode from a remote server on a continuous basis. It uses WinHTTP to communicate with the remote server and retrieve the shellcode, and then XOR encryption to obfuscate the data. The program can be useful for various security testing and research purposes, such as testing the efficacy of antivirus software or exploring the potential of remote code execution vulnerabilities.
 
@@ -14,7 +14,7 @@ __I don't condone using this tool for any kind of malicious activity__
 (if the project doesn't compile, you can edit the compiler and add any missing directories.)
 
 
-Results tested with Havoc shellcodes:
+# Results tested with Havoc shellcodes:
 
 __NORMAL:__
 
