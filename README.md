@@ -15,9 +15,11 @@ __I don't condone using this tool for any kind of malicious activity__
 
 
 
-
+Results with the normal one:
 ![yeah no1](https://user-images.githubusercontent.com/107830842/235260521-fd756a29-96e7-4434-8a56-5fe44a1311cc.JPG)
 
+Results with control flow obfuscation:
+![1of26](https://user-images.githubusercontent.com/107830842/235336742-1f38d41d-27ae-4bf5-8446-66baeec656b2.png)
 
 
 Other notes:
@@ -25,4 +27,4 @@ SO = String Obfuscation
 , CFO = Control Flow Obfuscation
 
 String Obfuscation as of writing this doesn't work.
-Control Flow Obfuscation works but still has the same results on antiscan as the normal one.
+
