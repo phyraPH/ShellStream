@@ -12,7 +12,7 @@ __I don't condone using this tool for any kind of malicious activity__
 (if the project doesn't compile, you can edit the compiler and add any missing directories.)
 
 
-# Results tested with Havoc shellcodes:
+# Results:
 
 __NORMAL:__
 
