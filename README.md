@@ -2,9 +2,10 @@
 
 Windows-based application downloads a binary file from a server using WinHTTP and executes it by copying it to memory and invoking it with a function pointer. This should only be intended for ethical purposes.
 
- - Download and execute shellcode
- - Retrieve shellcode using HTTP
- - Minimal obfuscation
+ - Downloads a binary file from a remote server using HTTP protocol and WinHTTP library.
+ - Executes the downloaded binary by copying it to memory and invoking it with a function pointer.
+ - Control Flow Obfuscation
+ - String Obfuscation (not working as of updating this)
 
 __I don't condone using this tool for any kind of malicious activity__
 
@@ -30,6 +31,4 @@ __CONTROL FLOW OBFUSCATION:__
 Other notes:
 SO = String Obfuscation
 , CFO = Control Flow Obfuscation
-
-String Obfuscation as of writing this doesn't work.
 
