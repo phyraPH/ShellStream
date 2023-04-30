@@ -15,16 +15,17 @@ __I don't condone using this tool for any kind of malicious activity__
 
 
 
-__NORMAL__
+__NORMAL:__
 
 ![yeah no1](https://user-images.githubusercontent.com/107830842/235260521-fd756a29-96e7-4434-8a56-5fe44a1311cc.JPG)
 
 
 
 
-__CONTROL FLOW OBFUSCATION__
+__CONTROL FLOW OBFUSCATION:__
+![1of26 (2)](https://user-images.githubusercontent.com/107830842/235336808-274db6cb-24fa-400d-9da6-f7a153d9f5ef.JPG)
 
-![1of26](https://user-images.githubusercontent.com/107830842/235336742-1f38d41d-27ae-4bf5-8446-66baeec656b2.png)
+
 
 
 Other notes:
