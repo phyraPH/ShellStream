@@ -39,3 +39,4 @@ SO = String Obfuscation
  - [ ] Interactable python script
  - [ ] Process Injection
  - [ ] Dll compiler
+ - [ ] Loop until successful fetch of shellcode
