@@ -32,3 +32,10 @@ Other notes:
 SO = String Obfuscation
 , CFO = Control Flow Obfuscation
 
+
+
+
+# To Do
+ [] Interactable python script
+ [] Process Injection
+ [] Dll compiler
