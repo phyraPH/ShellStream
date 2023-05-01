@@ -36,6 +36,6 @@ SO = String Obfuscation
 
 
 # To Do
- [] Interactable python script
- [] Process Injection
- [] Dll compiler
+ - [] Interactable python script
+ - [] Process Injection
+ - [] Dll compiler
