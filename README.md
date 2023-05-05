@@ -1,4 +1,4 @@
-*Update: Remove String Obfuscation folder, and added a loop that continuously tries to fetch the shellcode until successful.
+* Update: Remove String Obfuscation folder, and added a loop that continuously tries to fetch the shellcode until successful.
 
 # ShellStream
 
