@@ -1,3 +1,5 @@
+Update: Remove String Obfuscation folder, and added a loop that continuously tries to fetch the shellcode until successful.
+
 # ShellStream
 
 Windows-based application downloads a binary file from a server using WinHTTP and executes it by copying it to memory and invoking it with a function pointer. This should only be intended for ethical purposes.
@@ -39,4 +41,4 @@ SO = String Obfuscation
  - [ ] Interactable python script
  - [ ] Process Injection
  - [ ] Dll compiler
- - [ ] Loop until successful fetch of shellcode
+ - [x] Loop until successful fetch of shellcode
