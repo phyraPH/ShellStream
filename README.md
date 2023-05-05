@@ -31,8 +31,7 @@ __CONTROL FLOW OBFUSCATION:__
 
 
 Other notes:
-SO = String Obfuscation
-, CFO = Control Flow Obfuscation
+CFO = Control Flow Obfuscation
 
 
 
