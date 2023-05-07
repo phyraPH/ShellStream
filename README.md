@@ -1,5 +1,6 @@
 * Update: Remove String Obfuscation folder, and added a loop that continuously tries to fetch the shellcode until successful.
 * note: CSE.cpp output gets detected under Wacatac.H!ml, you can remove the loop function or just use the control flow obfuscation version to get through it.
+* another note: CFO version was recently been detected. I'll be rewriting this soon. But for now you can go through the commits and use the versions without the loop.
 # ShellStream
 
 Windows-based application downloads a binary file from a server using WinHTTP and executes it by copying it to memory and invoking it with a function pointer. This should only be intended for ethical purposes.
