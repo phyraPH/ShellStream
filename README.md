@@ -1,4 +1,4 @@
-* Update: The normal and CFO version (for me) are no longer being detected by windows Defender. I also added a bit more advanced version of the CFO version.
+* Update: It's now detected by Windows Defender. I'll plan on adding more features but detection is not the no 1 priority right now.
 # ShellStream
 
 Windows-based application downloads a binary file from a server using WinHTTP and executes it by copying it to memory and invoking it with a function pointer. This should only be intended for ethical purposes.
