@@ -1,4 +1,4 @@
-* Update: Improved the main file.
+* Update: Improved the main file. First update in a while and probably the last for another while.
 # ShellStream
 
 Windows-based application downloads a binary file from a server using WinHTTP and executes it by copying it to memory and invoking it with a function pointer. This should only be intended for ethical purposes.
